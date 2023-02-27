@@ -1,68 +1,80 @@
-CREATE TABLE if not exists Users (
-    UserID varchar(255) NOT NULL PRIMARY KEY,
-    FirstName varchar(255) NOT NULL,
-    LastName varchar(255) NOT NULL,
-    Password varchar(50) NOT NULL
+CREATE TABLE if not exists user (
+    user_id CHAR(36) PRIMARY KEY DEFAULT (uuid()),
+    first_name varchar(255) NOT NULL,
+	middle_name varchar(255),
+    last_name varchar(255) NOT NULL,
+	email varchar(255) NOT NULL UNIQUE,
+    password varchar(50) NOT NULL,
+    role varchar(255),
+	verified boolean
 );
 
-CREATE TABLE if not exists Tags (
-	TagID varchar(255) NOT NULL PRIMARY KEY,
-	UserID varchar(255) NOT NULL,
-	Name varchar(255) NOT NULL,
-	CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+ALTER TABLE user
+ADD CONSTRAINT constraint_email UNIQUE (email);
+
+CREATE TABLE if not exists token (
+	id CHAR(36) PRIMARY KEY DEFAULT (uuid()),
+	user_id CHAR(36) NOT NULL,
+	token varchar(255) NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    confirmed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE Tags
-ADD FOREIGN KEY (UserID) REFERENCES Users(UserID);
+ALTER TABLE token
+ADD FOREIGN KEY (user_id) REFERENCES user(user_id);
 
-CREATE TABLE if not exists UserTag (
-	UserID varchar(255) NOT NULL,
-	TagID varchar(255) NOT NULL,
-	PRIMARY KEY CLUSTERED (UserID , TagID)
-); 
 
-ALTER TABLE UserTag
-ADD FOREIGN KEY (UserID) REFERENCES Users(UserID);
-
-ALTER TABLE UserTag
-ADD FOREIGN KEY (TagID) REFERENCES Tags(TagID);
-
-CREATE TABLE if not exists Lists (
-	ListID varchar(255) NOT NULL PRIMARY KEY,
-	UserID varchar(255) NOT NULL,
-	Name varchar(255) NOT NULL,
-	CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE if not exists tag (
+	tag_id CHAR(36) PRIMARY KEY DEFAULT (uuid()),
+	user_id CHAR(36) NOT NULL,
+	name varchar(255) NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-ALTER TABLE Lists
-ADD FOREIGN KEY (UserID) REFERENCES Users(UserID);
+ALTER TABLE tag
+ADD FOREIGN KEY (user_id) REFERENCES user(user_id);
 
-
-CREATE TABLE if not exists Tasks (
-	TaskID varchar(255) NOT NULL PRIMARY KEY,
-	ListID varchar(255) NOT NULL,
-	Summary varchar(255) NOT NULL,
-    Task varchar(500) NOT NULL,
-	CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    DueDate DATE NOT NULL,
-    Priority int NOT NULL,
-    Status int NOT NULL
+CREATE TABLE if not exists list (
+	list_id CHAR(36) PRIMARY KEY DEFAULT (uuid()),
+	user_id CHAR(36) NOT NULL,
+	name varchar(255) NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-ALTER TABLE Tasks
-ADD FOREIGN KEY (ListID) REFERENCES Lists(ListID);
+ALTER TABLE list
+ADD FOREIGN KEY (user_id) REFERENCES user(user_id);
 
-CREATE TABLE if not exists Remainders (
-	RemainderID varchar(255) NOT NULL PRIMARY KEY,
-	TaskID varchar(255) NOT NULL,
-	Message varchar(255) NOT NULL,
-    SentTime DATETIME NOT NULL,
-	CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE if not exists task (
+	task_id CHAR(36) PRIMARY KEY DEFAULT (uuid()),
+	list_id CHAR(36) NOT NULL,
+	summary varchar(255) NOT NULL,
+    task varchar(500) NOT NULL,
+    due_date DATE NOT NULL,
+    priority int NOT NULL,
+    status int NOT NULL
 );
 
-ALTER TABLE Remainders
-ADD FOREIGN KEY (TaskID) REFERENCES Tasks(TaskID);
+ALTER TABLE task
+ADD FOREIGN KEY (list_id) REFERENCES list(list_id);
+
+CREATE TABLE task_tags (
+    task_id CHAR(36),
+    tag_id CHAR(36),
+    FOREIGN KEY (task_id) REFERENCES task(task_id),
+    FOREIGN KEY (tag_id) REFERENCES tag(tag_id)
+);
+
+CREATE TABLE if not exists remainder (
+	remainder_id CHAR(36) PRIMARY KEY DEFAULT (uuid()),
+	task_id CHAR(36) NOT NULL,
+	message varchar(255) NOT NULL,
+    sent_time DATETIME NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+ALTER TABLE remainder
+ADD FOREIGN KEY (task_id) REFERENCES task(task_id);

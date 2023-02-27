@@ -9,4 +9,9 @@ docker run init
 
 # -d run docker container in detach mode (background)
 
+# push docker image to docker hub
+
+docker login
+docker tag init:latest jinshuangniu/advanced1cloud1computing:db.01
+docker push jinshuangniu/advanced1cloud1computing:db.01
 
