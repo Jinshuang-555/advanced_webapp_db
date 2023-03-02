@@ -18,5 +18,5 @@ jobs:
       run: | 
         TAG=$(date +%s | tr -d '\n' | tr -d '\r' | tr ':' '_')
         docker build -t db:$TAG .
-        docker tag db:$TAG jinshuangniu/advanced1cloud1computing:db:$TAG
-        docker push jinshuangniu/advanced1cloud1computing:db:$TAG
+        docker tag db:$TAG jinshuangniu/advanced1cloud1computing:db-$TAG
+        docker push jinshuangniu/advanced1cloud1computing:db-$TAG
