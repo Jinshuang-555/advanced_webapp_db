@@ -5,7 +5,7 @@ To run as init container for k8s cluster to conduct 0-down time databse migratio
 
 ### build docker images
 
-docker build -t init .
+docker build -t init4 .
 
 ### conduct database migration using flyway
 
@@ -14,6 +14,5 @@ docker run init
 ### push docker image to docker hub
 
 docker login
-docker tag init:latest jinshuangniu/advanced1cloud1computing:db.01
-docker push jinshuangniu/advanced1cloud1computing:db.01
-
+docker tag init4:latest jinshuangniu/advanced1cloud1computing:db.04
+docker push jinshuangniu/advanced1cloud1computing:db.04
