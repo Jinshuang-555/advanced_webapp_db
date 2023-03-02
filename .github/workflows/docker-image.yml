@@ -15,6 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build -t db:$(date +%s) .
-           docker tag db:$(date +%s) jinshuangniu/advanced1cloud1computing:db:$(date +%s)
-           docker push jinshuangniu/advanced1cloud1computing:db:$(date +%s)
+      run: | 
+        docker build -t db:$(date +%s) .
+        docker tag db:$(date +%s) jinshuangniu/advanced1cloud1computing:db:$(date +%s)
+        docker push jinshuangniu/advanced1cloud1computing:db:$(date +%s)
