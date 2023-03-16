@@ -8,4 +8,4 @@ ENV FLYWAY_URL=jdbc:mysql://todo.cob9le38a3hn.us-east-1.rds.amazonaws.com:3306/t
 ENV FLYWAY_USER=root
 ENV FLYWAY_PASSWORD=password
 
-# CMD [ "info", "migrate" ]
+CMD [ "info", "migrate" ]
